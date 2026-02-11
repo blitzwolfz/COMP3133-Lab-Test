@@ -7,6 +7,10 @@ router.post('/signup', async (req, res) => {
     try {
         const { username, firstname, lastname, password } = req.body;
 
+        if (!username || !firstname || !lastname || !password) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
         const existingUser = await User.findOne({ username: username.toLowerCase() });
         if (existingUser) {
             return res.status(400).json({ error: 'Username already exists' });
