@@ -28,7 +28,16 @@ app.get('/', (req, res) => {
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
+    .then(async () => {
+        console.log('Connected to MongoDB');
+        // Drop any stale indexes that may have been created incorrectly
+        try {
+            await mongoose.connection.collection('users').dropIndexes();
+            console.log('Indexes reset');
+        } catch (e) {
+            // Collection might not exist yet
+        }
+    })
     .catch(err => console.error('MongoDB connection error:', err));
 
 // Track connected users: { socketId: { username, room } }

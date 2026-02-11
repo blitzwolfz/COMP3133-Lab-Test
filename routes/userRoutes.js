@@ -5,7 +5,8 @@ const User = require('../models/User');
 // Signup
 router.post('/signup', async (req, res) => {
     try {
-        const { username, firstname, lastname, password } = req.body;
+        const body = req.body || {};
+        const { username, firstname, lastname, password } = body;
 
         if (!username || !firstname || !lastname || !password) {
             return res.status(400).json({ error: 'All fields are required' });
@@ -21,6 +22,7 @@ router.post('/signup', async (req, res) => {
 
         res.status(201).json({ message: 'User created successfully', username: user.username });
     } catch (err) {
+        console.error('Signup error:', err);
         if (err.code === 11000) {
             return res.status(400).json({ error: 'Username already exists' });
         }
